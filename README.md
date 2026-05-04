@@ -1,4 +1,4 @@
-# Anti Gravity Decor Store
+# Avi Decor Store
 
 **"Defy Gravity, Decorate in Pink Elegance"**
 
