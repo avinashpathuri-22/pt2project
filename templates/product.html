@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="product-detail-image">
+        <img src="{{ get_image_url(product.image_url) }}" alt="{{ product.name }}">
+        {% if product.stock < 10 and product.stock > 0 %}
+            <span class="badge badge-warning stock-badge">Low Stock: {{ product.stock }}</span>
+        {% elif product.stock <= 0 %}
+            <span class="badge badge-danger stock-badge">Out of Stock</span>
+        {% else %}
+            <span class="badge badge-success stock-badge">In Stock</span>
+        {% endif %}
+    </div>
+    <div class="product-detail-info">
+        <h2>{{ product.name }}</h2>
+        <p class="price large-price">₹{{ "%.2f"|format(product.price) }}</p>
+        
+        <p class="description">{{ product.description }}</p>
+        
+        {% if product.stock > 0 %}
+        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" class="add-to-cart-form">
+            <div class="quantity-input">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}">
+            </div>
+            <button type="submit" class="btn btn-primary btn-large">Add to Cart</button>
+        </form>
+        {% else %}
+        <button class="btn btn-disabled btn-large" disabled>Out of Stock</button>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <h2 class="text-primary text-center">Your Profile</h2>
+        <br>
+        <div class="profile-info">
+            <p><strong>Full Name:</strong> {{ user.full_name }}</p>
+            <p><strong>Email Address:</strong> {{ user.email }}</p>
+            <hr>
+            <h3>Default Delivery Address</h3>
+            <p><strong>Address:</strong> {{ user.address or 'Not provided' }}</p>
+            <p><strong>City:</strong> {{ user.city or 'Not provided' }}</p>
+            <p><strong>Pincode:</strong> {{ user.pincode or 'Not provided' }}</p>
+            <br>
+            <p class="text-muted"><small>Joined on: {{ user.created_at.strftime('%Y-%m-%d') }}</small></p>
+        </div>
+        <div class="profile-actions text-center" style="margin-top: 2rem;">
+            <a href="{{ url_for('orders') }}" class="btn btn-primary">View My Orders</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

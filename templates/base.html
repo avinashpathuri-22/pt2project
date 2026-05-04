@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avistore</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container nav-content">
+            <a href="{{ url_for('index') }}" class="logo">
+                <span class="logo-text">Avistore<br><small>DECOR</small></span>
+            </a>
+            <nav class="nav-links">
+                <a href="{{ url_for('index') }}">Shop</a>
+                
+                {% if current_user %}
+                    <a href="{{ url_for('profile') }}">Welcome, {{ current_user.full_name.split()[0] }}</a>
+                    <a href="{{ url_for('orders') }}">My Orders</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                    <a href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+                
+                <a href="{{ url_for('cart') }}" class="cart-link">
+                    Cart <span class="cart-count">{{ cart_count }}</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <h3>Avistore</h3>
+                <p>Defy Gravity, Decorate in Pink Elegance.</p>
+            </div>
+            <div class="footer-links">
+                <p>&copy; 2026 Avistore.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

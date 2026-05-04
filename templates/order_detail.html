@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="order-detail-page">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2>Order Details <span class="text-primary">#ORD-{{ "%06d"|format(order.id) }}</span></h2>
+        <a href="{{ url_for('orders') }}" class="btn btn-outline">Back to Orders</a>
+    </div>
+    
+    <div class="order-grid">
+        <div class="card order-items-card">
+            <h3>Items in Order</h3>
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td>
+                            <div class="cart-item-info">
+                                <img src="{{ get_image_url(item.product.image_url) }}" alt="{{ item.product.name }}" class="cart-thumb">
+                                <span>{{ item.product.name }}</span>
+                            </div>
+                        </td>
+                        <td>₹{{ "%.2f"|format(item.price) }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹{{ "%.2f"|format(item.price * item.quantity) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="order-total-display text-right">
+                <br>
+                <h4>Grand Total: <span class="text-primary">₹{{ "%.2f"|format(order.total_amount) }}</span></h4>
+            </div>
+        </div>
+
+        <div class="card order-status-card">
+            <h3>Tracking Timeline</h3>
+            <div class="timeline">
+                {% set statuses = ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Out for Delivery', 'Delivered'] %}
+                {% set found_current = False %}
+                
+                {% for st in statuses %}
+                    {% if order.status == st %}
+                        {% set found_current = True %}
+                        <div class="timeline-item active">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <strong>{{ st }}</strong> (Current)
+                            </div>
+                        </div>
+                    {% elif not found_current %}
+                        <div class="timeline-item completed">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <span>{{ st }}</span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="timeline-item pending">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <span class="text-muted">{{ st }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            <hr>
+            <h3>Delivery Info</h3>
+            <p><strong>Name:</strong> {{ order.user.full_name }}</p>
+            <p><strong>Address:</strong> {{ order.user.address }}</p>
+            <p><strong>City/Pincode:</strong> {{ order.user.city }} - {{ order.user.pincode }}</p>
+            <br>
+            <a href="{{ url_for('update_order_status', order_id=order.id) }}" class="btn btn-outline btn-sm">Admin: Simulate Update</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

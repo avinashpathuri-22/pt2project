@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero">
+    <h1>Defy Gravity, Decorate in Pink Elegance</h1>
+    <p>Discover our curated collection of soft futuristic levitating art and anti-gravity decor.</p>
+</section>
+
+<section class="filters">
+    <form action="{{ url_for('index') }}" method="GET" class="filter-form">
+        <input type="text" name="q" placeholder="Search products..." value="{{ search_query }}">
+        <input type="number" name="max_price" placeholder="Max Price (₹)" value="{{ max_price or '' }}">
+        <button type="submit" class="btn btn-primary">Filter</button>
+        {% if search_query or max_price %}
+            <a href="{{ url_for('index') }}" class="btn btn-outline">Clear</a>
+        {% endif %}
+    </form>
+</section>
+
+<section class="products">
+    {% if products %}
+    <div class="product-grid">
+        {% for product in products %}
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="{{ get_image_url(product.image_url) }}" alt="{{ product.name }}">
+                    {% if product.stock < 10 and product.stock > 0 %}
+                        <span class="badge badge-warning">Low Stock: {{ product.stock }}</span>
+                    {% elif product.stock == 0 %}
+                        <span class="badge badge-danger">Out of Stock</span>
+                    {% else %}
+                        <span class="badge badge-success">In Stock</span>
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <h3>{{ product.name }}</h3>
+                    <p class="price">₹{{ "%.2f"|format(product.price) }}</p>
+                    <div class="product-actions">
+                        <a href="{{ url_for('product', product_id=product.id) }}" class="btn btn-outline">Details</a>
+                        {% if product.stock > 0 %}
+                        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" style="display:inline;">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-disabled" disabled>Sold Out</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No products found matching your search.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

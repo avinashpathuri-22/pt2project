@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="cart-page">
+    <h2>Your Shopping Cart</h2>
+
+    {% if items %}
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>
+                        <div class="cart-item-info">
+                            <img src="{{ get_image_url(item.product.image_url) }}" alt="{{ item.product.name }}" class="cart-thumb">
+                            <span>{{ item.product.name }}</span>
+                        </div>
+                    </td>
+                    <td>₹{{ "%.2f"|format(item.product.price) }}</td>
+                    <td>
+                        <div class="qty-controls">
+                            <form action="{{ url_for('add_to_cart', product_id=item.product.id) }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="quantity" value="-1">
+                                <button type="submit" class="btn btn-sm btn-outline">-</button>
+                            </form>
+                            <span>{{ item.quantity }}</span>
+                            <form action="{{ url_for('add_to_cart', product_id=item.product.id) }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="btn btn-sm btn-outline">+</button>
+                            </form>
+                        </div>
+                    </td>
+                    <td>₹{{ "%.2f"|format(item.subtotal) }}</td>
+                    <td>
+                        <form action="{{ url_for('remove_from_cart', product_id=item.product.id) }}" method="POST">
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="cart-summary">
+            <h3>Total: <span class="text-primary">₹{{ "%.2f"|format(total) }}</span></h3>
+            <div class="cart-actions">
+                <a href="{{ url_for('index') }}" class="btn btn-outline">Continue Shopping</a>
+                <a href="{{ url_for('checkout') }}" class="btn btn-success btn-large">Checkout</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-cart card">
+            <h3 class="text-primary">Your cart feels a little light.</h3>
+            <p>Gravity hasn't pulled any items into your cart yet.</p>
+            <br>
+            <a href="{{ url_for('index') }}" class="btn btn-primary btn-large">Discover Decor</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

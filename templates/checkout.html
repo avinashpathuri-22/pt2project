@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="checkout-page">
+    {% if success %}
+        <div class="order-success card">
+            <h2 class="text-primary">Order Checked In!</h2>
+            <p>Thank you for shopping at Avistore. Your otherworldly items will be levitating their way to you soon.</p>
+            <p><strong>Order Reference:</strong> #ORD-{{ "%06d"|format(order.id) }}</p>
+            <br>
+            <a href="{{ url_for('order_detail', order_id=order.id) }}" class="btn btn-outline">Track Order</a>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Continue Shopping</a>
+        </div>
+    {% else %}
+        <h2>Checkout</h2>
+        <div class="checkout-container">
+            <div class="checkout-form card">
+                <h3>Delivery Details</h3>
+                <form action="{{ url_for('checkout') }}" method="POST">
+                    <div class="form-group">
+                        <label for="fullname">Full Name</label>
+                        <input type="text" id="fullname" name="fullname" value="{{ current_user.full_name if current_user else '' }}" readonly>
+                        <small>Name is tied to your account</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" rows="3" required>{{ current_user.address if current_user and current_user.address else '' }}</textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" value="{{ current_user.city if current_user and current_user.city else '' }}" required>
+                        </div>
+                        <div class="form-group half">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" id="pincode" name="pincode" value="{{ current_user.pincode if current_user and current_user.pincode else '' }}" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-large btn-block">Place Order</button>
+                </form>
+            </div>
+            
+            <div class="checkout-summary card">
+                <h3>Order Summary</h3>
+                <div class="summary-total">
+                    <p>Total Amount:</p>
+                    <h4 class="text-primary">₹{{ "%.2f"|format(total) }}</h4>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
